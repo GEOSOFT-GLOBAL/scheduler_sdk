@@ -1,0 +1,11 @@
+src/
+node_modules/
+.git/
+.husky/
+*.log
+.DS_Store
+tsconfig.json
+vite.config.ts
+dice.config.ts
+git-config.json
+.gitignore

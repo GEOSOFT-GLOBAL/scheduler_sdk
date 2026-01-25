@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "prepare": "husky",
     "commit-config": "node dice.config.ts"
   },

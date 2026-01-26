@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build:css": "tailwindcss -i ./src/styles/tailwind.css -o ./styles/scheduler.css --minify",
+    "build": "pnpm build:css && vite build",
     "lint": "eslint .",
     "prepare": "husky",
     "commit-config": "node dice.config.ts"
@@ -23,6 +24,7 @@
     "@types/react": "^19.2.9",
     "@vitejs/plugin-react": "^5.1.2",
     "husky": "^9.1.7",
+    "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",

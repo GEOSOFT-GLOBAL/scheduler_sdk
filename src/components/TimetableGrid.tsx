@@ -32,14 +32,16 @@ export const TimetableGrid: React.FC<TimetableGridProps> = ({
 
   return (
     <div className={`timetable-grid ${className}`}>
-      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <table className="w-full border-collapse">
         <thead>
           <tr>
-            <th style={{ border: "1px solid #ddd", padding: "8px" }}>Time</th>
+            <th className="border border-gray-300 p-2 bg-gray-100 font-semibold">
+              Time
+            </th>
             {days.map((day, idx) => (
               <th
                 key={idx}
-                style={{ border: "1px solid #ddd", padding: "8px" }}
+                className="border border-gray-300 p-2 bg-gray-100 font-semibold"
               >
                 {day}
               </th>
@@ -49,12 +51,12 @@ export const TimetableGrid: React.FC<TimetableGridProps> = ({
         <tbody>
           {Array.from({ length: maxRow + 1 }).map((_, rowIdx) => (
             <tr key={rowIdx}>
-              <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+              <td className="border border-gray-300 p-2 bg-gray-50 font-medium">
                 Period {rowIdx + 1}
               </td>
               {days.map((_, colIdx) => {
                 const cell = timetable.cells.find(
-                  (c) => c.row === rowIdx && c.col === colIdx
+                  (c) => c.row === rowIdx && c.col === colIdx,
                 );
                 return (
                   <TimetableCellComponent

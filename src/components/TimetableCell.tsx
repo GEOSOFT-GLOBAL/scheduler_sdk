@@ -1,5 +1,5 @@
 import React from "react";
-import type { TimetableCell as TimetableCellType } from "../core/types";
+import type { ITimetableCell as TimetableCellType } from "../core/types";
 
 export interface TimetableCellProps {
   cell?: TimetableCellType;
@@ -13,12 +13,7 @@ export const TimetableCell: React.FC<TimetableCellProps> = ({
   onClick,
 }) => {
   if (!cell) {
-    return (
-      <td
-        style={{ border: "1px solid #ddd", padding: "8px" }}
-        className={className}
-      />
-    );
+    return <td className={`border border-gray-300 p-2 ${className}`} />;
   }
 
   const handleClick = () => {
@@ -27,16 +22,18 @@ export const TimetableCell: React.FC<TimetableCellProps> = ({
     }
   };
 
+  const textAlignClass = {
+    left: "text-left",
+    center: "text-center",
+    right: "text-right",
+  }[cell.textAlign || "left"];
+
   return (
     <td
       style={{
-        border: "1px solid #ddd",
-        padding: "8px",
         backgroundColor: cell.backgroundColor || "transparent",
-        textAlign: cell.textAlign || "left",
-        cursor: onClick ? "pointer" : "default",
       }}
-      className={`timetable-cell ${className}`}
+      className={`border border-gray-300 p-2 ${textAlignClass} ${onClick ? "cursor-pointer hover:bg-gray-50" : ""} timetable-cell ${className}`}
       onClick={handleClick}
       rowSpan={cell.isMerged ? cell.mergeSpan?.rows : 1}
       colSpan={cell.isMerged ? cell.mergeSpan?.cols : 1}

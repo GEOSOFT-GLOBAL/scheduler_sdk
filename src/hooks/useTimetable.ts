@@ -6,7 +6,7 @@ export const useTimetable = () => {
 
   useEffect(() => {
     context.fetchTimetable();
-  }, [context.config.sessionId]);
+  }, [context.fetchTimetable]);
 
   return {
     timetable: context.timetable,

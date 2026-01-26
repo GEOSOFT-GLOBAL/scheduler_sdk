@@ -96,9 +96,9 @@ export interface ITimetableDatabase {
 
 // SDK Configuration
 export interface TimetableConfig {
-  apiUrl: string;
-  apiKey?: string;
-  sessionId: string;
+  apiKey: string;
+  apiSecret: string;
+  apiUrl?: string; // Optional, defaults to production URL
 }
 
 export interface TimeSlot {

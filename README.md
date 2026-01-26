@@ -17,15 +17,15 @@ yarn add @geosoft/timetablely-sdk
 ### Basic Setup
 
 ```tsx
-import { TimetablelyProvider, TimetableGrid } from '@geosoft/timetablely-sdk';
+import { TimetablelyProvider, TimetableGrid } from "@geosoft/timetablely-sdk";
 
 function App() {
   return (
     <TimetablelyProvider
       config={{
-        apiUrl: 'https://api.timetablely.com/api/v1',
-        apiKey: 'your-api-key',
-        sessionId: 'your-session-id',
+        apiKey: "your-api-key",
+        apiSecret: "your-api-secret",
+        // apiUrl: 'https://custom-api.example.com/v1', // Optional: defaults to production
       }}
     >
       <TimetableGrid />
@@ -37,20 +37,20 @@ function App() {
 ### Using Hooks
 
 ```tsx
-import { useTimetable, useTimetableActions } from '@geosoft/timetablely-sdk';
+import { useTimetable, useTimetableActions } from "@geosoft/timetablely-sdk";
 
 function TimetableManager() {
   const { timetable, isLoading, error, refresh } = useTimetable();
   const { updateCell, generateTimetable } = useTimetableActions();
 
   const handleGenerate = async () => {
-    await generateTimetable('standard');
+    await generateTimetable("standard");
   };
 
   const handleCellUpdate = async (cellId: string) => {
     await updateCell(cellId, {
-      content: 'Updated content',
-      backgroundColor: '#f0f0f0',
+      content: "Updated content",
+      backgroundColor: "#f0f0f0",
     });
   };
 
@@ -73,7 +73,7 @@ function TimetableManager() {
 <TimetableGrid
   className="my-timetable"
   cellClassName="my-cell"
-  onCellClick={(cellId) => console.log('Clicked:', cellId)}
+  onCellClick={(cellId) => console.log("Clicked:", cellId)}
 />
 ```
 
@@ -84,16 +84,18 @@ function TimetableManager() {
 Provider component that wraps your app and provides timetable context.
 
 **Props:**
+
 - `config`: Configuration object
-  - `apiUrl`: API base URL
-  - `apiKey`: Optional API key for authentication
-  - `sessionId`: Session/class ID to load
+  - `apiKey`: Your API key (required)
+  - `apiSecret`: Your API secret (required)
+  - `apiUrl`: Optional API base URL (defaults to `https://api.timetablely.com/v1`)
 
 ### TimetableGrid
 
 Component that renders the timetable grid.
 
 **Props:**
+
 - `className`: Optional CSS class for the grid container
 - `cellClassName`: Optional CSS class for cells
 - `onCellClick`: Optional callback when a cell is clicked
@@ -103,6 +105,7 @@ Component that renders the timetable grid.
 Hook for accessing timetable data.
 
 **Returns:**
+
 - `timetable`: Current timetable data
 - `isLoading`: Loading state
 - `error`: Error message if any
@@ -113,6 +116,7 @@ Hook for accessing timetable data.
 Hook for timetable actions.
 
 **Returns:**
+
 - `updateCell(cellId, updates)`: Update a specific cell
 - `generateTimetable(type)`: Generate timetable ('standard' or 'ai')
 - `isLoading`: Loading state
@@ -122,9 +126,9 @@ Hook for timetable actions.
 
 ```typescript
 interface TimetableConfig {
-  apiUrl: string;
-  apiKey?: string;
-  sessionId: string;
+  apiKey: string;
+  apiSecret: string;
+  apiUrl?: string; // Optional, defaults to production URL
 }
 
 interface TimetableCell {
@@ -133,7 +137,7 @@ interface TimetableCell {
   col: number;
   content: string;
   backgroundColor?: string;
-  textAlign?: 'left' | 'center' | 'right';
+  textAlign?: "left" | "center" | "right";
   isMerged?: boolean;
   mergeSpan?: { rows: number; cols: number };
 }

@@ -14,8 +14,12 @@
     "commit-config": "node dice.config.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+   "author": {
+    "name": "ArziBlack",
+    "email": "arziblack2@gmail.com",
+    "url": "https://github.com/arziblack"
+  },
+  "license": "Apache-2.0",
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
     "react": "^19.2.3",

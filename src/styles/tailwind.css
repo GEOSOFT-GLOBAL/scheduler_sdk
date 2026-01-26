@@ -1,0 +1,8 @@
+@import "tailwindcss" layer(utilities);
+
+@config {
+  prefix: "sdk-";
+  corePlugins: {
+    preflight: false;
+  }
+}

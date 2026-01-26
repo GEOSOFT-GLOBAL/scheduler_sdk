@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build:css": "tailwindcss -i ./src/styles/tailwind.css -o ./styles/scheduler.css --minify",
     "lint": "eslint .",
     "prepare": "husky",
     "commit-config": "node dice.config.ts"
@@ -17,10 +18,12 @@
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
     "@types/node": "^25.0.10",
     "@types/react": "^19.2.9",
     "@vitejs/plugin-react": "^5.1.2",
     "husky": "^9.1.7",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4"

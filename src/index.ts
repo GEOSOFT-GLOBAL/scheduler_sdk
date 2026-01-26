@@ -1,3 +1,5 @@
+import "../styles/scheduler.css";
+
 // Core exports
 export * from "./core/TimetablelyProvider";
 export * from "./core/types";

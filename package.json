@@ -7,6 +7,9 @@
     "build:css": "tailwindcss -i ./src/styles/tailwind.css -o ./styles/scheduler.css --minify",
     "build": "pnpm build:css && vite build",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "rimraf dist",
     "prepare": "husky",
     "commit-config": "node dice.config.ts"
   },
@@ -25,6 +28,8 @@
     "@vitejs/plugin-react": "^5.1.2",
     "husky": "^9.1.7",
     "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "rimraf": "^6.1.2",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "^7.3.1",

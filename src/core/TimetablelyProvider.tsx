@@ -3,8 +3,9 @@ import type {
   TimetableConfig,
   TimetableContextValue,
   TimetableData,
-  Course,
-  Tutor,
+  ICourse,
+  ITutor,
+  ISession,
   ITimetableCell,
 } from "./types";
 
@@ -22,8 +23,9 @@ export const TimetablelyProvider: React.FC<TimetablelyProviderProps> = ({
   children,
 }) => {
   const [timetable, setTimetable] = useState<TimetableData | null>(null);
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+  const [courses, setCourses] = useState<ICourse[]>([]);
+  const [tutors, setTutors] = useState<ITutor[]>([]);
+  const [sessions, setSessions] = useState<ISession[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,6 +51,84 @@ export const TimetablelyProvider: React.FC<TimetablelyProviderProps> = ({
 
       const data = await response.json();
       setTimetable(data.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [config]);
+
+  const fetchCourses = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (config.apiKey) {
+        headers["Authorization"] = `Bearer ${config.apiKey}`;
+      }
+
+      const response = await fetch(`${config.apiUrl}/courses`, { headers });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch courses");
+      }
+
+      const data = await response.json();
+      setCourses(data.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [config]);
+
+  const fetchTutors = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (config.apiKey) {
+        headers["Authorization"] = `Bearer ${config.apiKey}`;
+      }
+
+      const response = await fetch(`${config.apiUrl}/tutors`, { headers });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch tutors");
+      }
+
+      const data = await response.json();
+      setTutors(data.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [config]);
+
+  const fetchSessions = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      if (config.apiKey) {
+        headers["Authorization"] = `Bearer ${config.apiKey}`;
+      }
+
+      const response = await fetch(`${config.apiUrl}/sessions`, { headers });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch sessions");
+      }
+
+      const data = await response.json();
+      setSessions(data.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
     } finally {
@@ -133,11 +213,15 @@ export const TimetablelyProvider: React.FC<TimetablelyProviderProps> = ({
     timetable,
     courses,
     tutors,
+    sessions,
     isLoading,
     error,
     fetchTimetable,
     updateCell,
     generateTimetable,
+    fetchCourses,
+    fetchTutors,
+    fetchSessions,
   };
 
   return (

@@ -5,8 +5,8 @@ export * from "./core/TimetablelyProvider";
 export * from "./core/types";
 
 // Component exports
-export * from "./components/TimetableGrid";
-export * from "./components/TimetableCell";
+export { TimetableGrid } from "./components/TimetableGrid";
+export { TimetableCell as TimetableCellComponent } from "./components/TimetableCell";
 
 // Hook exports
 export * from "./hooks/useTimetable";

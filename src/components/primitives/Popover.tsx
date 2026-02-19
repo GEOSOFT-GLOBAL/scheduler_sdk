@@ -52,11 +52,14 @@ export const PopoverTrigger: React.FC<PopoverTriggerProps> = ({ children, asChil
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         ctx.setOpen(!ctx.open);
-        children.props.onClick?.(e);
+        (children.props as { onClick?: (e: React.MouseEvent) => void }).onClick?.(e);
     };
 
     if (asChild) {
-        return React.cloneElement(children, {
+        return React.cloneElement(children as React.ReactElement<{
+            ref?: React.Ref<HTMLElement>;
+            onClick?: (e: React.MouseEvent) => void;
+        }>, {
             ref: ctx.triggerRef,
             onClick: handleClick,
         });

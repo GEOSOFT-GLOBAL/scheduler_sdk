@@ -1,5 +1,617 @@
 @import "tailwindcss";
 
-@layer utilities {
-  /* Custom utilities can go here */
+/* ─── Design Tokens (matching timetablely's theme) ─────────────────────────── */
+:root {
+  --ttly-radius: 0.375rem;
+
+  --ttly-background: oklch(1 0 0);
+  --ttly-foreground: oklch(0.129 0.042 264.695);
+  --ttly-card: oklch(1 0 0);
+  --ttly-card-foreground: oklch(0.129 0.042 264.695);
+  --ttly-popover: oklch(1 0 0);
+  --ttly-popover-foreground: oklch(0.129 0.042 264.695);
+  --ttly-primary: oklch(0.208 0.042 265.755);
+  --ttly-primary-foreground: oklch(0.984 0.003 247.858);
+  --ttly-secondary: oklch(0.968 0.007 247.896);
+  --ttly-secondary-foreground: oklch(0.208 0.042 265.755);
+  --ttly-muted: oklch(0.968 0.007 247.896);
+  --ttly-muted-foreground: oklch(0.554 0.046 257.417);
+  --ttly-accent: oklch(0.968 0.007 247.896);
+  --ttly-border: oklch(0.929 0.013 255.508);
+  --ttly-input: oklch(0.929 0.013 255.508);
+  --ttly-ring: oklch(0.704 0.04 256.788);
+  --ttly-destructive: oklch(0.577 0.245 27.325);
+
+  --ttly-cell-bg: #ffffff;
+  --ttly-cell-selected-bg: #93c5fd;
+  --ttly-cell-editing-bg: #fefce8;
+  --ttly-cell-merged-bg: #d1fae5;
+  --ttly-cell-hover-bg: #f9fafb;
+  --ttly-cell-height: 100px;
+  --ttly-cell-width: 150px;
+  --ttly-header-height: 48px;
+  --ttly-header-width: 64px;
+  --ttly-day-label-width: 128px;
+}
+
+.dark {
+  --ttly-background: oklch(0.129 0.042 264.695);
+  --ttly-foreground: oklch(0.984 0.003 247.858);
+  --ttly-card: oklch(0.208 0.042 265.755);
+  --ttly-card-foreground: oklch(0.984 0.003 247.858);
+  --ttly-popover: oklch(0.208 0.042 265.755);
+  --ttly-popover-foreground: oklch(0.984 0.003 247.858);
+  --ttly-primary: oklch(0.929 0.013 255.508);
+  --ttly-primary-foreground: oklch(0.208 0.042 265.755);
+  --ttly-secondary: oklch(0.279 0.041 260.031);
+  --ttly-secondary-foreground: oklch(0.984 0.003 247.858);
+  --ttly-muted: oklch(0.279 0.041 260.031);
+  --ttly-muted-foreground: oklch(0.704 0.04 256.788);
+  --ttly-border: oklch(1 0 0 / 10%);
+  --ttly-input: oklch(1 0 0 / 15%);
+  --ttly-ring: oklch(0.551 0.027 264.364);
+
+  --ttly-cell-bg: oklch(0.208 0.042 265.755);
+  --ttly-cell-selected-bg: oklch(0.488 0.243 264.376);
+  --ttly-cell-editing-bg: oklch(0.279 0.041 260.031);
+  --ttly-cell-merged-bg: oklch(0.279 0.041 260.031);
+  --ttly-cell-hover-bg: oklch(0.279 0.041 260.031);
+}
+
+/* ─── Grid Wrapper ───────────────────────────────────────────────────────────*/
+.ttly-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ttly-grid-container {
+  border-radius: var(--ttly-radius);
+  border: 1px solid var(--ttly-border);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  overflow: hidden;
+}
+
+.ttly-grid-title-bar {
+  background-color: var(--ttly-primary);
+  color: var(--ttly-primary-foreground);
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 0.9375rem;
+}
+
+.ttly-grid-scroll {
+  overflow-x: auto;
+}
+
+/* ─── Table ──────────────────────────────────────────────────────────────────*/
+.ttly-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ttly-table__caption {
+  caption-side: bottom;
+  padding: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--ttly-muted-foreground);
+}
+
+/* ─── Day Labels (left sticky column) ───────────────────────────────────────*/
+.ttly-day-label-header {
+  background-color: var(--ttly-background);
+  border: 2px solid var(--ttly-border);
+  width: var(--ttly-day-label-width);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  padding: 0.5rem;
+  color: var(--ttly-foreground);
+}
+
+.ttly-day-label {
+  background-color: #e5e7eb;
+  border: 2px solid #9ca3af;
+  height: var(--ttly-cell-height);
+  width: var(--ttly-day-label-width);
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+
+.ttly-day-label__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+/* ─── Column Header ──────────────────────────────────────────────────────────*/
+.ttly-header {
+  background-color: var(--ttly-muted);
+  border: 2px solid var(--ttly-border);
+  height: var(--ttly-header-height);
+  min-width: var(--ttly-header-width);
+  font-weight: 600;
+  color: var(--ttly-foreground);
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.ttly-header--hovered {
+  background-color: color-mix(in oklch, var(--ttly-muted) 80%, transparent);
+}
+
+.ttly-header__editing,
+.ttly-header__time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 0.25rem;
+}
+
+.ttly-header__time-label {
+  font-size: 0.6875rem;
+  text-align: left;
+  line-height: 1.25;
+  padding-left: 0.75rem;
+}
+
+.ttly-header__duration-input {
+  width: 100%;
+  min-width: 50px;
+  height: 2rem;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.ttly-header__menu-trigger {
+  position: absolute;
+  top: -4px;
+  right: 4px;
+  z-index: 100;
+}
+
+.ttly-header__menu-btn {
+  height: 1.5rem;
+  width: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Grid Cell ──────────────────────────────────────────────────────────────*/
+.ttly-cell {
+  border: 2px solid #9ca3af;
+  height: var(--ttly-cell-height);
+  width: var(--ttly-cell-width);
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  background-color: var(--ttly-cell-bg);
+  vertical-align: middle;
+}
+
+.ttly-cell--no-bg:hover {
+  background-color: var(--ttly-cell-hover-bg);
+}
+
+.ttly-cell--selected {
+  background-color: var(--ttly-cell-selected-bg) !important;
+}
+
+.ttly-cell--selected-border {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.ttly-cell--merged {
+  background-color: var(--ttly-cell-merged-bg);
+}
+
+.ttly-cell--merged-border {
+  border-color: #10b981;
+}
+
+.ttly-cell--editing {
+  background-color: var(--ttly-cell-editing-bg);
+}
+
+.ttly-cell--editing-border {
+  border-color: #eab308;
+}
+
+.ttly-cell__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  position: relative;
+  padding: 0.5rem;
+}
+
+.ttly-cell__textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: 1px solid var(--ttly-border);
+  border-radius: var(--ttly-radius);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  outline: none;
+  background: var(--ttly-background);
+  color: var(--ttly-foreground);
+}
+
+.ttly-cell__content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ttly-cell__text {
+  display: block;
+  word-break: break-word;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+.ttly-cell__text--tutor {
+  font-size: 0.625rem;
+  color: #6b7280;
+}
+
+.ttly-cell__placeholder {
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+.ttly-cell__menu-trigger {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.ttly-cell:hover .ttly-cell__menu-trigger {
+  opacity: 1;
+}
+
+.ttly-cell__menu-btn {
+  background: var(--ttly-background);
+  border: 1px solid var(--ttly-border);
+  border-radius: var(--ttly-radius);
+  padding: 0.25rem;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ttly-foreground);
+}
+
+.ttly-cell__menu-btn:hover {
+  background: var(--ttly-muted);
+}
+
+/* ─── Alignment Helpers ──────────────────────────────────────────────────────*/
+.ttly-align-left {
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.ttly-align-center {
+  text-align: center;
+  justify-content: center;
+}
+
+.ttly-align-right {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+/* ─── Cell Menu (Popover Content) ────────────────────────────────────────────*/
+.ttly-popover-content {
+  background: var(--ttly-popover);
+  color: var(--ttly-popover-foreground);
+  border: 1px solid var(--ttly-border);
+  border-radius: var(--ttly-radius);
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  min-width: 180px;
+}
+
+.ttly-cell-menu,
+.ttly-header-menu {
+  padding: 0.25rem;
+}
+
+.ttly-cell-menu__list,
+.ttly-header-menu__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ttly-cell-menu__item,
+.ttly-header-menu__item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--ttly-radius) - 2px);
+  cursor: pointer;
+  color: var(--ttly-foreground);
+  width: 100%;
+}
+
+.ttly-cell-menu__item:hover,
+.ttly-header-menu__item:hover {
+  background: var(--ttly-accent);
+}
+
+.ttly-cell-menu__item--active {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.ttly-header-menu__item--destructive:hover {
+  background: oklch(from var(--ttly-destructive) l c h / 10%);
+  color: var(--ttly-destructive);
+}
+
+.ttly-cell-menu__divider {
+  height: 1px;
+  background: var(--ttly-border);
+  margin: 0.25rem 0;
+}
+
+.ttly-cell-menu__label {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ttly-muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.ttly-cell-menu__colors {
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ttly-cell-menu__color-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ttly-cell-menu__color-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.ttly-cell-menu__color-input {
+  flex: 1;
+  height: 2rem;
+  cursor: pointer;
+  border-radius: var(--ttly-radius);
+  border: 1px solid var(--ttly-border);
+}
+
+.ttly-cell-menu__color-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.25rem;
+}
+
+.ttly-cell-menu__color-swatch {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: var(--ttly-radius);
+  border: 1px solid var(--ttly-border);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.ttly-cell-menu__color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.ttly-cell-menu__clear-color {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--ttly-destructive);
+  background: transparent;
+  border: none;
+  border-radius: var(--ttly-radius);
+  cursor: pointer;
+}
+
+.ttly-cell-menu__clear-color:hover {
+  background: oklch(from var(--ttly-destructive) l c h / 10%);
+}
+
+/* ─── Button Primitive ───────────────────────────────────────────────────────*/
+.ttly-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: var(--ttly-radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.15s, color 0.15s, box-shadow 0.15s;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.ttly-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ttly-btn-default {
+  background: var(--ttly-primary);
+  color: var(--ttly-primary-foreground);
+}
+
+.ttly-btn-default:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ttly-primary) 90%, black);
+}
+
+.ttly-btn-outline {
+  background: transparent;
+  color: var(--ttly-foreground);
+  border: 1px solid var(--ttly-border);
+}
+
+.ttly-btn-outline:hover:not(:disabled) {
+  background: var(--ttly-accent);
+}
+
+.ttly-btn-ghost {
+  background: transparent;
+  color: var(--ttly-foreground);
+  border: 1px solid transparent;
+}
+
+.ttly-btn-ghost:hover:not(:disabled) {
+  background: var(--ttly-accent);
+}
+
+.ttly-btn-destructive {
+  background: var(--ttly-destructive);
+  color: white;
+}
+
+.ttly-btn-default-size,
+.ttly-btn-default {
+  padding: 0.5rem 1rem;
+  height: 2.25rem;
+}
+
+.ttly-btn-sm {
+  padding: 0.375rem 0.75rem;
+  height: 2rem;
+  font-size: 0.8125rem;
+}
+
+.ttly-btn-icon {
+  padding: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+/* ─── Input Primitive ────────────────────────────────────────────────────────*/
+.ttly-input {
+  display: flex;
+  width: 100%;
+  border-radius: var(--ttly-radius);
+  border: 1px solid var(--ttly-input);
+  background: var(--ttly-background);
+  color: var(--ttly-foreground);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ttly-input:focus {
+  border-color: var(--ttly-ring);
+  box-shadow: 0 0 0 2px oklch(from var(--ttly-ring) l c h / 30%);
+}
+
+/* ─── Controls Toolbar ───────────────────────────────────────────────────────*/
+.ttly-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0;
+}
+
+.ttly-controls__group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ttly-controls__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.ttly-controls__btn--danger {
+  color: var(--ttly-destructive);
+  border-color: oklch(from var(--ttly-destructive) l c h / 30%);
+}
+
+.ttly-controls__btn--danger:hover:not(:disabled) {
+  background: oklch(from var(--ttly-destructive) l c h / 10%);
+}
+
+.ttly-controls__selection-info {
+  font-size: 0.8125rem;
+  color: var(--ttly-muted-foreground);
+  padding: 0.25rem 0.5rem;
+  background: var(--ttly-muted);
+  border-radius: var(--ttly-radius);
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────────*/
+@keyframes ttly-cell-ripple {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+.ttly-animate-ripple {
+  animation: ttly-cell-ripple var(--duration, 500ms) ease-out var(--delay, 0ms);
 }

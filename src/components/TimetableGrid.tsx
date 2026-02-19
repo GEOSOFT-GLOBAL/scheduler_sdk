@@ -1,76 +1,146 @@
-import React from "react";
-import { useTimetable } from "../hooks/useTimetable";
-import { TimetableCell as TimetableCellComponent } from "./TimetableCell";
+import * as React from "react";
+import type { IGridState, IGridActions } from "../types/grid";
+import { generateTimeLabels } from "../lib/temputils";
+import { dayLabels, GRID_SIZE } from "../lib/constants";
+import { GridCell } from "./GridCell";
+import GridHeader from "./GridHeader";
 
 export interface TimetableGridProps {
+  /** If provided, uses this grid state instead of consuming from context */
+  gridState: IGridState & IGridActions;
+  /** Optional title shown in the grid header bar */
+  title?: string;
   className?: string;
-  cellClassName?: string;
-  onCellClick?: (cellId: string) => void;
 }
 
 export const TimetableGrid: React.FC<TimetableGridProps> = ({
+  gridState,
+  title = "Master Timetable",
   className = "",
-  cellClassName = "",
-  onCellClick,
 }) => {
-  const { timetable, isLoading, error } = useTimetable();
+  const {
+    selectedCells,
+    mergedCells,
+    hiddenCells,
+    columnCount,
+    hoveredColumn,
+    openPopover,
+    editingDuration,
+    tempDuration,
+    defaultSlotDuration,
+    columnDurations,
+    cellContents,
+    editingCell,
+    tempCellText,
+    handleCellClick,
+    handleCellDoubleClick,
+    addColumnAfter,
+    deleteColumn,
+    startEditingDuration,
+    saveDurationEdit,
+    cancelDurationEdit,
+    setHoveredColumn,
+    setOpenPopover,
+    setTempDuration,
+    setTempCellText,
+    toggleCellVertical,
+    setCellAlignment,
+    setCellBackgroundColor,
+    saveCellEdit,
+    cancelCellEdit,
+  } = gridState;
 
-  if (isLoading) {
-    return <div className={className}>Loading timetable...</div>;
-  }
+  const timeLabels = generateTimeLabels(columnCount, columnDurations, defaultSlotDuration);
 
-  if (error) {
-    return <div className={className}>Error: {error}</div>;
-  }
+  const handleDurationKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") saveDurationEdit();
+    if (e.key === "Escape") cancelDurationEdit();
+  };
 
-  if (!timetable) {
-    return <div className={className}>No timetable data</div>;
-  }
+  const renderHeader = (time: string, index: number) => (
+    <GridHeader
+      key={index}
+      time={time}
+      index={index}
+      hoveredColumn={hoveredColumn}
+      editingDuration={editingDuration}
+      openPopover={openPopover}
+      tempDuration={tempDuration}
+      columnCount={columnCount}
+      onMouseEnter={() => setHoveredColumn(index)}
+      onMouseLeave={() => setHoveredColumn(null)}
+      onTempDurationChange={setTempDuration}
+      onKeyDown={handleDurationKeyDown}
+      onBlur={saveDurationEdit}
+      onOpenPopoverChange={(open) => setOpenPopover(open ? index : null)}
+      onStartEditingDuration={() => startEditingDuration(index)}
+      onAddColumnAfter={() => addColumnAfter(index)}
+      onDeleteColumn={() => deleteColumn(index)}
+    />
+  );
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const maxRow = Math.max(...timetable.cells.map((c) => c.row), 0);
+  const renderCell = (row: number, col: number) => {
+    const cellKey = `${row}-${col}`;
+    const isSelected = selectedCells.has(cellKey);
+    const mergeInfo = mergedCells.get(cellKey);
+    const isColumnHovered = hoveredColumn === col;
+    const cellContent = cellContents.get(cellKey);
+
+    return (
+      <GridCell
+        key={cellKey}
+        row={row}
+        col={col}
+        cellKey={cellKey}
+        isSelected={isSelected}
+        isColumnHovered={isColumnHovered}
+        mergeInfo={mergeInfo}
+        hiddenCells={hiddenCells}
+        cellContent={cellContent}
+        editingCell={editingCell}
+        tempCellText={tempCellText}
+        onCellClick={handleCellClick}
+        onCellDoubleClick={handleCellDoubleClick}
+        onTempCellTextChange={setTempCellText}
+        onSaveCellEdit={saveCellEdit}
+        onCancelCellEdit={cancelCellEdit}
+        onToggleCellVertical={toggleCellVertical}
+        onSetCellAlignment={setCellAlignment}
+        onSetCellBackgroundColor={setCellBackgroundColor}
+      />
+    );
+  };
 
   return (
-    <div className={`timetable-grid ${className}`}>
-      <table className="w-full border-collapse">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 p-2 bg-gray-100 font-semibold">
-              Time
-            </th>
-            {days.map((day, idx) => (
-              <th
-                key={idx}
-                className="border border-gray-300 p-2 bg-gray-100 font-semibold"
-              >
-                {day}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: maxRow + 1 }).map((_, rowIdx) => (
-            <tr key={rowIdx}>
-              <td className="border border-gray-300 p-2 bg-gray-50 font-medium">
-                Period {rowIdx + 1}
-              </td>
-              {days.map((_, colIdx) => {
-                const cell = timetable.cells.find(
-                  (c) => c.row === rowIdx && c.col === colIdx,
-                );
-                return (
-                  <TimetableCellComponent
-                    key={`${rowIdx}-${colIdx}`}
-                    cell={cell}
-                    className={cellClassName}
-                    onClick={onCellClick}
-                  />
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className={`ttly-grid-wrapper ${className}`}>
+      <div className="ttly-grid-container">
+        <div className="ttly-grid-title-bar">
+          {title}
+        </div>
+        <div className="ttly-grid-scroll">
+          <table className="ttly-table">
+            <caption className="ttly-table__caption">Weekly class schedule for all subjects</caption>
+            <thead>
+              <tr>
+                <th className="ttly-day-label-header">Time / Day</th>
+                {timeLabels.map(renderHeader)}
+              </tr>
+            </thead>
+            <tbody>
+              {Array.from({ length: GRID_SIZE }, (_, row) => (
+                <tr key={row}>
+                  <td className="ttly-day-label">
+                    <div className="ttly-day-label__inner">
+                      {dayLabels[row]}
+                    </div>
+                  </td>
+                  {Array.from({ length: columnCount }, (_, col) => renderCell(row, col))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

@@ -35,11 +35,11 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: "node",
-      include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    environment: "jsdom",
+    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
     coverage: {
       provider: "v8",
-      include: ["src/lib/**"],
+      include: ["src/lib/**", "src/hooks/**"],
     },
   },
 });

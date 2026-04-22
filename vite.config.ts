@@ -1,4 +1,5 @@
-import { defineConfig } from "vite";
+/// <reference types="vitest" />
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { resolve } from "path";
@@ -31,5 +32,14 @@ export default defineConfig({
     },
     sourcemap: true,
     cssCodeSplit: false,
+  },
+  test: {
+    globals: true,
+    environment: "node",
+      include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    coverage: {
+      provider: "v8",
+      include: ["src/lib/**"],
+    },
   },
 });

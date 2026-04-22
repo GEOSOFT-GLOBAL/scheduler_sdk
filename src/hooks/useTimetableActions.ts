@@ -1,15 +1,13 @@
-import { useTimetableContext } from "../core/TimetablelyProvider";
-import type { ITimetableCell } from "../core/types";
+import { useTimetablelyContext } from "../core/TimetablelyProvider";
 
 export const useTimetableActions = () => {
-  const context = useTimetableContext();
+  const { gridState } = useTimetablelyContext();
 
   return {
-    updateCell: (cellId: string, updates: Partial<ITimetableCell>) =>
-      context.updateCell(cellId, updates),
-    generateTimetable: (type: "standard" | "ai" = "standard") =>
-      context.generateTimetable(type),
-    isLoading: context.isLoading,
-    error: context.error,
+    resetGrid: gridState.resetGrid,
+    mergeCells: gridState.mergeCells,
+    setCellAlignment: gridState.setCellAlignment,
+    toggleCellVertical: gridState.toggleCellVertical,
+    setCellBackgroundColor: gridState.setCellBackgroundColor,
   };
 };

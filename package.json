@@ -1,6 +1,6 @@
 {
   "name": "@geo-soft/timetablely-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Embeddable timetable scheduler SDK based on Timetablely",
   "main": "./dist/timetablely-sdk.umd.js",
   "module": "./dist/timetablely-sdk.es.js",
@@ -8,11 +8,15 @@
   "style": "./styles/scheduler.css",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/timetablely-sdk.es.js",
-      "require": "./dist/timetablely-sdk.umd.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/timetablely-sdk.umd.js"
     },
-    "./styles": "./styles/scheduler.css"
+    "./styles": {
+      "types": "./styles/scheduler.css.d.ts",
+      "import": "./styles/scheduler.css",
+      "require": "./styles/scheduler.css"
+    }
   },
   "files": [
     "dist",

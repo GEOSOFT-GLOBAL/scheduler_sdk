@@ -1,6 +1,6 @@
 {
   "name": "@geo-soft/timetablely-sdk",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Embeddable timetable scheduler SDK based on Timetablely",
   "main": "./dist/timetablely-sdk.umd.js",
   "module": "./dist/timetablely-sdk.es.js",
@@ -42,7 +42,10 @@
     "scheduler",
     "sdk",
     "react",
-    "timetablely"
+    "timetablely",
+    "@geo-soft",
+    "timetablely-sdk",
+    "@geo-soft/timetablely-sdk"
   ],
   "author": {
     "name": "ArziBlack",

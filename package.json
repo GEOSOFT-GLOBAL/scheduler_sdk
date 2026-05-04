@@ -1,6 +1,6 @@
 {
   "name": "@geo-soft/timetablely-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Embeddable timetable scheduler SDK based on Timetablely",
   "main": "./dist/timetablely-sdk.umd.js",
   "module": "./dist/timetablely-sdk.es.js",

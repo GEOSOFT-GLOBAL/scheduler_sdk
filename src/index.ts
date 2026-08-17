@@ -18,6 +18,8 @@ export { useGridState } from "./hooks/useGridState";
 export { useTimetablelyScheduler } from "./hooks/useTimetablelyScheduler";
 export { useApiTimetable } from "./hooks/useApiTimetable";
 export type { ApiTimetableState } from "./hooks/useApiTimetable";
+export { useTimetable } from "./hooks/useTimetable";
+export { useTimetableActions } from "./hooks/useTimetableActions";
 
 // ─── Components ──────────────────────────────────────────────────────────────
 export { TimetableGrid } from "./components/TimetableGrid";
@@ -53,6 +55,37 @@ export {
 } from "./lib/temputils";
 
 export { getAlignmentClass } from "./lib/grid-helper";
+
+// ─── API Transport ────────────────────────────────────────────────────────────
+export {
+    createApiClient,
+    TimetablelyApiError,
+    DEFAULT_API_URL,
+    TIMETABLE_PATH,
+} from "./lib/api-client";
+export type {
+    ApiEnvelope,
+    ApiRequestOptions,
+    TimetablelyApiClient,
+} from "./lib/api-client";
+
+export {
+    normalizeDatabase,
+    normalizeTutor,
+    normalizeCourse,
+    normalizeSession,
+    normalizeTemplate,
+    toSyncPayload,
+} from "./lib/normalize";
+export type {
+    ServerTimetableData,
+    ServerTutor,
+    ServerCourse,
+    ServerSession,
+    ServerTemplate,
+    ServerTimetable,
+    ServerSpecialBlock,
+} from "./lib/normalize";
 
 export {
     dayLabels,

@@ -14,9 +14,20 @@ yarn add @geosoft/timetablely-sdk
 
 ## Usage
 
+### Importing Styles
+
+Before using any SDK components, import the CSS styles:
+
+```tsx
+import "@geosoft/timetablely-sdk/styles";
+```
+
+Place this import at the top of your application entry point (e.g., `main.tsx` or `App.tsx`), before importing any SDK components.
+
 ### Basic Setup
 
 ```tsx
+import "@geosoft/timetablely-sdk/styles"; // Import styles first
 import { TimetablelyProvider, TimetableGrid } from "@geosoft/timetablely-sdk";
 
 function App() {
@@ -75,6 +86,43 @@ function TimetableManager() {
   cellClassName="my-cell"
   onCellClick={(cellId) => console.log("Clicked:", cellId)}
 />
+```
+
+#### Customizing Design Tokens
+
+The SDK uses CSS custom properties for theming. Override them in your CSS:
+
+```css
+:root {
+  /* Primary colors */
+  --ttly-primary: #2563eb;
+  --ttly-primary-foreground: #ffffff;
+
+  /* Grid dimensions */
+  --ttly-cell-height: 120px;
+  --ttly-cell-width: 160px;
+  --ttly-header-height: 48px;
+
+  /* Cell colors */
+  --ttly-cell-bg: #ffffff;
+  --ttly-cell-selected-bg: #93c5fd;
+  --ttly-cell-editing-bg: #fefce8;
+  --ttly-cell-merged-bg: #d1fae5;
+
+  /* Other theme colors */
+  --ttly-background: #ffffff;
+  --ttly-foreground: #1f2937;
+  --ttly-border: #e5e7eb;
+  --ttly-muted: #f3f4f6;
+}
+
+/* Dark mode */
+.dark {
+  --ttly-background: #1f2937;
+  --ttly-foreground: #f3f4f6;
+  --ttly-cell-bg: #2d3748;
+  --ttly-border: #4b5563;
+}
 ```
 
 ## API
